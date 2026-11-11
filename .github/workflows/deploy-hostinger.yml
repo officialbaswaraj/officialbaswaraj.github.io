@@ -1,0 +1,36 @@
+# Copies this website to the Hostinger hosting for parthware.com on every change.
+# Needs 3 repository secrets: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD.
+# Optional repository variable FTP_DIR (default "public_html/").
+name: Deploy to parthware.com
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HAS_FTP: ${{ secrets.FTP_SERVER != '' && secrets.FTP_USERNAME != '' && secrets.FTP_PASSWORD != '' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Skip until the FTP secrets are added
+        if: env.HAS_FTP != 'true'
+        run: echo "FTP secrets not set yet, nothing uploaded."
+
+      - name: Upload the site by FTP
+        if: env.HAS_FTP == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ vars.FTP_DIR || 'public_html/' }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            README.md
+            .nojekyll

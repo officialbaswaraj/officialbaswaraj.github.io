@@ -1,0 +1,6 @@
+# parthware.com on Hostinger: always use https and the address without www.
+RewriteEngine On
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://parthware.com%{REQUEST_URI} [L,R=301]
+ErrorDocument 404 /
