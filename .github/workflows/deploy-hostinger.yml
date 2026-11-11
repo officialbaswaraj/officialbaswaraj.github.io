@@ -27,6 +27,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps          # encrypted connection, so the password never travels in plain text
           server-dir: ${{ vars.FTP_DIR || 'public_html/' }}
           exclude: |
             **/.git*
